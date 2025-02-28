@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ArticleRevisionController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -39,10 +40,25 @@ Route::middleware('auth')->group(function () {
         Route::delete('{article}', [ArticleController::class, 'destroy']);
         Route::post('{article}/favorite', [ArticleController::class, 'favorite']);
         Route::delete('{article}/favorite', [ArticleController::class, 'unfavorite']);
-    });
 
-    Route::prefix('articles')->group(function () {
         Route::post('{article}/comments', [CommentController::class, 'store']);
         Route::delete('{article}/comments/{comment}', [CommentController::class, 'destroy']);
+
+        // Route::prefix('{article}/revisions')->group(function () {
+        Route::get('{article}/revisions/', [ArticleRevisionController::class, 'index']);
+        Route::get('{article}/revisions/{revision}', [ArticleRevisionController::class, 'show']);
+        Route::post('{article}/revisions/{revision}/revert', [ArticleRevisionController::class, 'revert']);
+        // });
     });
+
+    // Route::prefix('articles')->group(function () {
+    //     Route::post('{article}/comments', [CommentController::class, 'store']);
+    //     Route::delete('{article}/comments/{comment}', [CommentController::class, 'destroy']);
+    // });
+    // this routes for articles revisions
+    // Route::prefix('articles/{article}/revisions')->group(function () {
+    //     Route::get('/', [ArticleRevisionController::class, 'index']); //->middleware('can:viewRevisions,article');
+    //     Route::get('{revision}', [ArticleRevisionController::class, 'show'])->middleware('can:viewRevisions,article');
+    //     Route::post('{revision}/revert', [ArticleRevisionController::class, 'revert'])->middleware('can:revert,article');
+    // });
 });
