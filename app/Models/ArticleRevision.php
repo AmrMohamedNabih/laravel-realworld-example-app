@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class ArticleRevision extends Model
 {
     use HasFactory;
-    protected $fillable = ['article_id', 'previous_data', 'user_id'];
+    protected $fillable = ['article_id', 'user_id', 'title', 'description', 'body', 'tags'];
 
     protected $casts = [
-        'previous_data' => 'array',
+        'tags' => 'array',
     ];
 
     public function article()

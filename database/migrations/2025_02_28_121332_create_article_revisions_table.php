@@ -15,8 +15,11 @@ return new class extends Migration
         Schema::table('article_revisions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('article_id')->constrained('articles')->onDelete('cascade')->index();
-            $table->json('previous_data');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->index();
+            $table->text('title')->nullable();
+            $table->text('description')->nullable();
+            $table->longText('body')->nullable();
+            $table->json('tags')->nullable();
             $table->timestamps();
         });
     }
