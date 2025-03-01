@@ -37,5 +37,48 @@ class ArticleRevisionTest extends TestCase
             'description' => 'create  description 1',
         ]);
     }
-    
+    public function test_can_fetch_article_revision()
+    {
+        $user = User::factory()->create();
+
+        $article = Article::factory()->create([
+            'user_id' => $user->id,
+            'title' => 'Original Title',
+            'body' => 'Original Body',
+            'description' => 'Original Description',
+        ]);
+        $revision = ArticleRevision::factory()->create([
+            'article_id' => $article->id,
+            'title' => 'Original Title',
+            'body' => 'Original body',
+            'description' => 'Original description',
+            'user_id' => $article->user_id
+        ]);
+        $response = $this->actingAs($user)->get("/api/articles/{$article->slug}/revisions/{$revision->id}");
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'title' => 'Original Title',
+            'body' => 'Original body',
+            'description' => 'Original description',
+        ]);
+    }
+
+    public function test_can_revert_to_revision()
+    {
+        $user = User::factory()->create();
+        $article = Article::factory()->create(['title' => 'Updated Title', 'user_id' => $user->id]);
+        $revision = ArticleRevision::factory()->create([
+            'article_id' => $article->id,
+            'title' => 'Original Title',
+            'body' => 'Original body',
+            'description' => 'Original description',
+            'user_id' => $article->user_id
+        ]);
+
+        $response = $this->actingAs($user)->post("/api/articles/{$article->slug}/revisions/{$revision->id}/revert");
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('articles', ['title' => 'Original Title']);
+    }
 }
