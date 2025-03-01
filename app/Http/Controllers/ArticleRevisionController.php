@@ -46,6 +46,6 @@ class ArticleRevisionController extends Controller
         return response()->json([
             'message' => 'Article reverted successfully',
             'article' => new ArticleResource($article)
-        ]);
+        ], 201);
     }
 }
